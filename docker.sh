@@ -5,7 +5,7 @@ DOCKERFILE='Dockerfile'
 IMAGE_REPOSITORY='kaggle'
 IMAGE_TAG='latest'
 GCR_HOST='gcr.io/mario-318203'
-TARGET='rubik-cube'
+TARGET='base'
 
 usage() {
   cat << EOF
@@ -33,17 +33,8 @@ push() {
 }
 
 run() {
-  local SOURCE_PATH=$1
-  local TARGET_PATH=$2
-  local TAG=$3
+  local TAG=$1
   local MOUNT_OPTION=""
-
-  if [[ -z ${SOURCE_PATH} || -z ${TARGET_PATH} ]]; then
-    echo "To run this with GPD, you MUST pass the source and target absolute paths to mount"
-    echo "e.g) ./docker.sh run -sp /home/rubik-cube/dataset -tp /rubik-cube/dataset"
-  elif [[ -d ${SOURCE_PATH} ]]; then
-    MOUNT_OPTION="-v ${SOURCE_PATH}:${TARGET_PATH}"
-  fi
 
   gcloud auth configure-docker
   docker pull "${GCR_HOST}/${IMAGE_REPOSITORY}:${TAG}"
@@ -59,16 +50,6 @@ for i in "${@}"; do
     -t|--tag)
       shift
       export IMAGE_TAG=${1}
-      shift
-      ;;
-    -sp|--source-path)
-      shift
-      export SOURCE_PATH=${1}
-      shift
-      ;;
-    -tp|--target-path)
-      shift
-      export TARGET_PATH=${1}
       shift
       ;;
     --target)
@@ -91,7 +72,7 @@ for i in "${@}"; do
 done
 
 if [[ ${COMMAND} == "run" ]]; then
-  ${COMMAND} "${SOURCE_PATH}" "${TARGET_PATH}" "${IMAGE_TAG}"
+  ${COMMAND} "${IMAGE_TAG}"
 elif [[ ${COMMAND} == "build" ]]; then
   ${COMMAND} "${IMAGE_TAG}" "${TARGET}"
 else

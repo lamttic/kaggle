@@ -47,8 +47,6 @@ RUN python3 -m pip install --no-cache-dir torch==1.9.1+cu111 torchvision==0.10.1
 # Clean up
 RUN rm ./clean.sh ./requirements.txt ./get-pip.py
 
-FROM gcr.io/mario-318203/rubik-cube:base AS rubik-cube
-
 # Install gsutil for getting dataset
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
         sudo apt-get install apt-transport-https ca-certificates gnupg -y && \
